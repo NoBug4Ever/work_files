@@ -1,0 +1,18 @@
+@https://retejs.org/llms.txt  @https://retejs.org/llms-full.txt  這兩個鏈接是rete.js llms.txt的url。我現在需要開發rete.js相關的功能,你需要參考llms.txt中的內容幫我完成開發
+@InterceptionConfigurator.vue,
+需求:
+1.在節點中增加分支socket input socket,和分支socket output socket,如圖1中所示,分支input socket加在節點的左測,分支output socket加在節點的右側
+1.1 分支input默認是不顯示,只有被創建出來後才會被它的父節點的分支output連接顯示
+1.2 分支socket需要和原來的input、output socket區分開來,新增一個自定義Node的vue文件
+1.3 原來的在上下位置的socket我現在叫它station socket,把原來的CustomSocket.vue改成StationSocket.vue
+
+2.改變原來的右鍵彈出菜單的觸發時機,將右鍵觸發改為左鍵點擊output socket觸發
+2.1 點擊分支output socket將在原節點的右邊創建一個新節點
+2.1 同一個分支可無限創建分支節點
+2.1 如果一個節點存在多個分支節點,需要調整所有節點的顯示位置
+2.1.1 分支節點的位置邏輯是:
+2.1.1.1 第一個分支節點y坐標和父節點一致,x坐標為父節點x坐標+400+150,2.當創建分支節點時,父節點的分支節點超過1個,則需要調整所有節點的位置,每個節點的y坐標公式為,父節點Y坐標-n(節點數量)*50(間隔)-n*節點高度
+2.1.1.2 需要計算這個節點所有分支節點佔用的總高度,並且重新設置這個父節點上下的節點和其分支節點的位置,需要保證所有的節點不會重疊
+2.2 點擊station output socket則在原來的分支下面創建一個新節點,這邏輯和原來的右鍵創建新節點的邏輯需要保持一致,不要改變
+2.3 station output socket創建的節點可以繼續顯示station socket 和分支socket,分支socket創建的分支節點需要隱藏station socket,這邊的判斷邏輯通過data.info.nestedLevel進行判斷,<=1的為station output創建的節點 ,>1的為非station output socket創建的節點
+2.3 在創建節點時,需要傳遞nestedLevel屬性,nestedLevel屬性為分支的嵌套層數,station output socket創建的節點為1,分支output socket創建的起始為2,每加一層就+1,比如station output socket創建node a ,node a 通過分支socket創建node a1,node a1的nestedLevel=2,，nodea1通過分支socket創建nodea2,那麼nodea2的nestedlevel為3(nodea1.nestedLevel+1)
